@@ -27,6 +27,14 @@ pip3 install SpeechRecognition pyaudio pyobjc
 python3 panic.py
 ```
 
+Use a custom trigger word instead of "home":
+
+```bash
+python3 panic.py hide
+python3 panic.py clear
+python3 panic.py safe
+```
+
 Press `Ctrl+C` to stop.
 
 ## Requirements
