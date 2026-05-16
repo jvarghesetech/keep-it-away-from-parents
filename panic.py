@@ -3,6 +3,7 @@ import subprocess
 import sys
 
 DEFAULT_TRIGGERS = ["home", "hide", "clear"]
+WAKE_WORD = "back"
 SILENT = "--silent" in sys.argv
 
 def log(msg):
@@ -14,6 +15,12 @@ def show_desktop():
     subprocess.run(["afplay", "/System/Library/Sounds/Funk.aiff"])
     subprocess.run(["pmset", "displaysleepnow"])
     log("🏠 Display off!")
+
+def wake_display():
+    """Wake the display back up"""
+    subprocess.run(["caffeinate", "-u", "-t", "1"])
+    subprocess.run(["afplay", "/System/Library/Sounds/Glass.aiff"])
+    log("👀 Display on!")
 
 def listen_for_panic(trigger_words=None):
     if trigger_words is None:
@@ -27,7 +34,7 @@ def listen_for_panic(trigger_words=None):
         recognizer.adjust_for_ambient_noise(source, duration=1)
         recognizer.energy_threshold = 300
 
-    log(f"👂 Ready! Say any of {trigger_words} to hide everything.")
+    log(f"👂 Ready! Say any of {trigger_words} to hide, '{WAKE_WORD}' to wake.")
     log("   Press Ctrl+C to stop.\n")
 
     while True:
@@ -41,6 +48,8 @@ def listen_for_panic(trigger_words=None):
 
             if any(word in text for word in trigger_words):
                 show_desktop()
+            elif WAKE_WORD in text:
+                wake_display()
 
         except sr.UnknownValueError:
             pass
