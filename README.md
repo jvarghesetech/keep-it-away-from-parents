@@ -27,12 +27,11 @@ pip3 install SpeechRecognition pyaudio pyobjc
 python3 panic.py
 ```
 
-Use a custom trigger word instead of "home":
+By default **"home"**, **"hide"**, and **"clear"** all trigger it. Use custom words:
 
 ```bash
-python3 panic.py hide
-python3 panic.py clear
 python3 panic.py safe
+python3 panic.py safe abort exit
 ```
 
 Press `Ctrl+C` to stop.
