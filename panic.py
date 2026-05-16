@@ -7,7 +7,7 @@ def show_desktop():
     subprocess.run(["pmset", "displaysleepnow"])
     print("🏠 Display off!")
 
-def listen_for_panic():
+def listen_for_panic(trigger_word="home"):
     recognizer = sr.Recognizer()
     mic = sr.Microphone()
 
@@ -16,7 +16,7 @@ def listen_for_panic():
         recognizer.adjust_for_ambient_noise(source, duration=1)
         recognizer.energy_threshold = 300
 
-    print("👂 Ready! Say 'home' to hide everything.")
+    print(f"👂 Ready! Say '{trigger_word}' to hide everything.")
     print("   Press Ctrl+C to stop.\n")
 
     while True:
@@ -29,7 +29,7 @@ def listen_for_panic():
             text = recognizer.recognize_google(audio).lower()
             print(f"✅ Heard: '{text}'")
 
-            if "home" in text:
+            if trigger_word in text:
                 show_desktop()
 
         except sr.UnknownValueError:
@@ -41,4 +41,5 @@ def listen_for_panic():
             sys.exit(0)
 
 if __name__ == "__main__":
-    listen_for_panic()
+    word = sys.argv[1] if len(sys.argv) > 1 else "home"
+    listen_for_panic(trigger_word=word)
