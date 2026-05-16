@@ -4,6 +4,7 @@ import sys
 
 def show_desktop():
     """Sleep the display instantly — hides everything, no permissions needed"""
+    subprocess.run(["afplay", "/System/Library/Sounds/Funk.aiff"])
     subprocess.run(["pmset", "displaysleepnow"])
     print("🏠 Display off!")
 
