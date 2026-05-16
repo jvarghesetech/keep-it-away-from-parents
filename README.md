@@ -4,7 +4,8 @@ A voice-activated panic button for macOS. Say **"home"** and your screen goes co
 
 ## How it works
 
-- Listens for the word **"home"** using your microphone
+- Listens for trigger words using your microphone
+- Plays a subtle sound so you know it worked
 - Instantly sleeps the display — hides every app, fullscreen or not
 - Everything is still running when you wake the screen back up
 
