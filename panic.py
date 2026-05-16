@@ -2,6 +2,10 @@ import speech_recognition as sr
 import subprocess
 import sys
 import time
+from datetime import datetime
+from pathlib import Path
+
+LOG_FILE = Path.home() / ".panic_log.txt"
 
 DEFAULT_TRIGGERS = ["home", "hide", "clear"]
 WAKE_WORD = "back"
@@ -13,14 +17,20 @@ def log(msg):
     if not SILENT:
         print(msg)
 
+def write_log(event):
+    with open(LOG_FILE, "a") as f:
+        f.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} — {event}\n")
+
 def show_desktop():
     """Sleep the display instantly — hides everything, no permissions needed"""
+    write_log("panic triggered — display off")
     subprocess.run(["afplay", "/System/Library/Sounds/Funk.aiff"])
     subprocess.run(["pmset", "displaysleepnow"])
     log("🏠 Display off!")
 
 def wake_display():
     """Wake the display back up"""
+    write_log("wake triggered — display on")
     subprocess.run(["caffeinate", "-u", "-t", "1"])
     subprocess.run(["afplay", "/System/Library/Sounds/Glass.aiff"])
     log("👀 Display on!")
