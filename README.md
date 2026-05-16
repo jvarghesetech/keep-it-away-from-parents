@@ -46,6 +46,20 @@ python3 panic.py --silent
 
 Press `Ctrl+C` to stop.
 
+### Auto-start on login
+
+Run once to make it start automatically every time your Mac boots:
+
+```bash
+python3 autostart.py
+```
+
+To remove it:
+
+```bash
+python3 autostart.py --remove
+```
+
 ## Requirements
 
 - macOS
