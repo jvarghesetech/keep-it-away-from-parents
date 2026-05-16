@@ -35,6 +35,12 @@ python3 panic.py safe
 python3 panic.py safe abort exit
 ```
 
+Run silently with no terminal output (so nothing is visible on screen):
+
+```bash
+python3 panic.py --silent
+```
+
 Press `Ctrl+C` to stop.
 
 ## Requirements
