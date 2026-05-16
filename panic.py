@@ -1,10 +1,13 @@
 import speech_recognition as sr
 import subprocess
 import sys
+import time
 
 DEFAULT_TRIGGERS = ["home", "hide", "clear"]
 WAKE_WORD = "back"
 SILENT = "--silent" in sys.argv
+COOLDOWN = 3  # seconds before it can trigger again
+last_triggered = 0
 
 def log(msg):
     if not SILENT:
@@ -47,7 +50,11 @@ def listen_for_panic(trigger_words=None):
             log(f"✅ Heard: '{text}'")
 
             if any(word in text for word in trigger_words):
-                show_desktop()
+                if time.time() - last_triggered >= COOLDOWN:
+                    last_triggered = time.time()
+                    show_desktop()
+                else:
+                    log("⏳ Cooldown active, wait a moment...")
             elif WAKE_WORD in text:
                 wake_display()
 
