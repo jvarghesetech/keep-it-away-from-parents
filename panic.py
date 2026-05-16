@@ -2,13 +2,18 @@ import speech_recognition as sr
 import subprocess
 import sys
 
+DEFAULT_TRIGGERS = ["home", "hide", "clear"]
+SILENT = "--silent" in sys.argv
+
+def log(msg):
+    if not SILENT:
+        print(msg)
+
 def show_desktop():
     """Sleep the display instantly — hides everything, no permissions needed"""
     subprocess.run(["afplay", "/System/Library/Sounds/Funk.aiff"])
     subprocess.run(["pmset", "displaysleepnow"])
-    print("🏠 Display off!")
-
-DEFAULT_TRIGGERS = ["home", "hide", "clear"]
+    log("🏠 Display off!")
 
 def listen_for_panic(trigger_words=None):
     if trigger_words is None:
@@ -17,35 +22,35 @@ def listen_for_panic(trigger_words=None):
     recognizer = sr.Recognizer()
     mic = sr.Microphone()
 
-    print("🎤 Calibrating microphone...")
+    log("🎤 Calibrating microphone...")
     with mic as source:
         recognizer.adjust_for_ambient_noise(source, duration=1)
         recognizer.energy_threshold = 300
 
-    print(f"👂 Ready! Say any of {trigger_words} to hide everything.")
-    print("   Press Ctrl+C to stop.\n")
+    log(f"👂 Ready! Say any of {trigger_words} to hide everything.")
+    log("   Press Ctrl+C to stop.\n")
 
     while True:
         try:
-            print("🔴 Listening...")
+            log("🔴 Listening...")
             with mic as source:
                 audio = recognizer.listen(source, phrase_time_limit=4)
 
-            print("⏳ Processing...")
             text = recognizer.recognize_google(audio).lower()
-            print(f"✅ Heard: '{text}'")
+            log(f"✅ Heard: '{text}'")
 
             if any(word in text for word in trigger_words):
                 show_desktop()
 
         except sr.UnknownValueError:
-            print("❓ Couldn't understand, keep talking...")
+            pass
         except sr.RequestError as e:
-            print(f"❌ Speech recognition error: {e}")
+            log(f"❌ Speech recognition error: {e}")
         except KeyboardInterrupt:
-            print("\nStopped.")
+            log("\nStopped.")
             sys.exit(0)
 
 if __name__ == "__main__":
-    words = sys.argv[1:] if len(sys.argv) > 1 else DEFAULT_TRIGGERS
+    args = [a for a in sys.argv[1:] if a != "--silent"]
+    words = args if args else DEFAULT_TRIGGERS
     listen_for_panic(trigger_words=words)
